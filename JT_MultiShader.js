@@ -81,7 +81,6 @@ var g_canvasID;									// HTML-5 'canvas' element ID#
 worldBox = new VBObox0();		  // Holds VBO & shaders for 3D 'world' ground-plane grid, etc;
 part1Box = new VBObox1();		  // "  "  for first set of custom-shaded 3D parts
 part2Box = new VBObox2();     // "  "  for second set of custom-shaded 3D parts
-part3Box = new VBObox3();
 
 // For animation:---------------------
 var g_lastMS = Date.now();			// Timestamp (in milliseconds) for our 
@@ -158,7 +157,7 @@ function main() {
     return;
   }
   gl.clearColor(0.2, 0.2, 0.2, 1);	  // RGBA color for clearing <canvas>
-
+  document.onkeydown= function(ev){keydown(ev); };
   gl.enable(gl.DEPTH_TEST);
 
   //----------------SOLVE THE 'REVERSED DEPTH' PROBLEM:------------------------
@@ -185,7 +184,6 @@ function main() {
                         // including ground-plane,                       
   part1Box.init(gl);		//  "		"		"  for 1st kind of shading & lighting
   part2Box.init(gl);    //  "   "   "  for 2nd kind of shading & lighting
-  part3Box.init(gl);
 	
   gl.clearColor(0.2, 0.2, 0.2, 1);	  // RGBA color for clearing <canvas>
   
@@ -278,12 +276,12 @@ function drawAll() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.viewport(0,											// Viewport lower-left corner
     0, 			// location(in pixels)
-    g_canvasID.width/2, 				// viewport width,
+    g_canvasID.width, 				// viewport width,
     g_canvasID.height);			// viewport height in pixels.
   aspect = g_canvasID.width/g_canvasID.height;
   var b4Draw = Date.now();
   var b4Wait = b4Draw - g_lastMS;
-
+  
 	if(g_show0 == 1) {	// IF user didn't press HTML button to 'hide' VBO0:
 	  worldBox.switchToMe();  // Set WebGL to render from this VBObox.
 		worldBox.adjust();		  // Send new values for uniforms to the GPU, and
@@ -299,9 +297,6 @@ function drawAll() {
   	part2Box.adjust();		  // Send new values for uniforms to the GPU, and
     part2Box.draw();			  // draw our VBO's contents using our shaders.
     }
-    part3Box.switchToMe();
-    part3Box.adjust();
-    part3Box.draw();
   
 /* // ?How slow is our own code?  	
 var aftrDraw = Date.now();
@@ -333,3 +328,72 @@ function VBO2toggle() {
   else g_show2 = 0;									// hide.
   console.log('g_show2: '+g_show2);
 }
+
+function keydown(ev) {
+	//------------------------------------------------------
+	//HTML calls this'Event handler' or 'callback function' when we press a key:
+		g_DisplaceX = (g_LookAtX - g_EyeX) * 0.5;
+		g_DisplaceY = (g_LookAtY - g_EyeY) * 0.5;
+		g_DisplaceZ = (g_LookatZ - g_EyeZ) * 0.5;
+
+		rotatedX = (g_DisplaceX * Math.cos(90 * (Math.PI/180))) - (g_DisplaceY * Math.sin(90 * (Math.PI/180)));
+		rotatedY = (g_DisplaceX * Math.sin(90 * (Math.PI/180))) + (g_DisplaceY * Math.cos(90 * (Math.PI/180)));
+
+		
+		if(ev.keyCode == 39) { // The right arrow key was pressed
+	//      g_EyeX += 0.01;
+					g_EyeX -= rotatedX;		// INCREASED for perspective camera)
+					g_EyeY -= rotatedY;
+          console.log("hi")
+					g_LookAtX -= rotatedX;
+					g_LookAtY -= rotatedY;
+					circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
+		} else 
+		if(ev.keyCode == 38) { // The up arrow key was pressed
+			//      g_EyeX += 0.01;
+							g_EyeX += g_DisplaceX;
+							g_EyeY += g_DisplaceY;
+							g_EyeZ += g_DisplaceZ;
+
+							g_LookAtX += g_DisplaceX;
+							g_LookAtY += g_DisplaceY;
+							g_LookatZ += g_DisplaceZ;
+							circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
+				} else 
+		if(ev.keyCode == 40) { // The up arrow key was pressed
+			//      g_EyeX += 0.01;
+							g_EyeX -= g_DisplaceX;
+							g_EyeY -= g_DisplaceY;
+							g_EyeZ -= g_DisplaceZ;
+
+							g_LookAtX -= g_DisplaceX;
+							g_LookAtY -= g_DisplaceY;
+							g_LookatZ -= g_DisplaceZ;
+							circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
+				} else
+		if(ev.keyCode == 68) { //D Key
+							theta -= 1;
+							g_LookAtX = g_EyeX + Math.cos(theta * (Math.PI/180));
+							g_LookAtY = g_EyeY + Math.sin(theta * (Math.PI/180));
+				} else 
+		if(ev.keyCode == 65) { //A Key
+							theta += 1;
+							g_LookAtX = g_EyeX + Math.cos(theta * (Math.PI/180));
+							g_LookAtY = g_EyeY + Math.sin(theta * (Math.PI/180));
+				} else
+		if(ev.keyCode == 87) { //W Key
+							g_LookatZ += 0.04;
+				} else
+		if(ev.keyCode == 83) { //S Key
+							g_LookatZ -= 0.04;
+				} else 
+		if (ev.keyCode == 37) { // The left arrow key was pressed
+	//      g_EyeX -= 0.01;
+					g_EyeX += rotatedX;		// INCREASED for perspective camera)
+					g_EyeY += rotatedY;
+
+					g_LookAtX += rotatedX;
+					g_LookAtY += rotatedY;
+					circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
+		} else { return; } // Prevent the unnecessary drawing   
+	}
