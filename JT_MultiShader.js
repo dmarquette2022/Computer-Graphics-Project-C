@@ -79,46 +79,22 @@ var g_canvasID;									// HTML-5 'canvas' element ID#
 
 // For multiple VBOs & Shaders:-----------------
 worldBox = new VBObox0();		  // Holds VBO & shaders for 3D 'world' ground-plane grid, etc;
-part1Box = new VBObox1();		  // "  "  for first set of custom-shaded 3D parts
-part2Box = new VBObox2();     // "  "  for second set of custom-shaded 3D parts
+gouraudBox = new VBObox1();		  // "  "  for first set of custom-shaded 3D parts
+phongBox = new VBObox2();     // "  "  for second set of custom-shaded 3D parts
 
 // For animation:---------------------
 var g_lastMS = Date.now();			// Timestamp (in milliseconds) for our 
                                 // most-recently-drawn WebGL screen contents.  
                                 // Set & used by moveAll() fcn to update all
                                 // time-varying params for our webGL drawings.
-  // All time-dependent params (you can add more!)
-var g_angleNow0  =  0.0; 			  // Current rotation angle, in degrees.
-var g_angleRate0 = 45.0;				// Rotation angle rate, in degrees/second.
-                                //---------------
-var g_angleNow1  = 100.0;       // current angle, in degrees
-var g_angleRate1 =  95.0;        // rotation angle rate, degrees/sec
-var g_angleMax1  = 150.0;       // max, min allowed angle, in degrees
-var g_angleMin1  =  60.0;
-                                //---------------
-var g_angleNow2  =  0.0; 			  // Current rotation angle, in degrees.
-var g_angleRate2 = -62.0;				// Rotation angle rate, in degrees/second.
-
-                                //---------------
-var g_posNow0 =  0.0;           // current position
-var g_posRate0 = 0.6;           // position change rate, in distance/second.
-var g_posMax0 =  0.5;           // max, min allowed for g_posNow;
-var g_posMin0 = -0.5;           
-                                // ------------------
-var g_posNow1 =  0.0;           // current position
-var g_posRate1 = 0.5;           // position change rate, in distance/second.
-var g_posMax1 =  1.0;           // max, min allowed positions
-var g_posMin1 = -1.0;
-                                //---------------
-
 // For mouse/keyboard:------------------------
 var g_show0 = 1;								// 0==Show, 1==Hide VBO0 contents on-screen.
-var g_show1 = 1;								// 	"					"			VBO1		"				"				" 
-var g_show2 = 1;                //  "         "     VBO2    "       "       "
+var g_show1 = 0;								// 	"					"			VBO1		"				"				" 
+var g_show2 = 0;                //  "         "     VBO2    "       "       "
 
-var g_EyeX = 5, g_EyeY = 5, g_EyeZ = 3; 
-var g_LookatZ = 2.4;
-var theta = 90;
+var g_EyeX = -5, g_EyeY = 0, g_EyeZ = 0; 
+var g_LookatZ = 0;
+var theta = 0;
 var g_LookAtX = g_EyeX + Math.cos(theta * (Math.PI/180));
 var g_LookAtY = g_EyeY + Math.sin(theta * (Math.PI/180));
 var g_DisplaceX = (g_LookAtX - g_EyeX) * 0.2;
@@ -182,8 +158,8 @@ function main() {
   // Initialize each of our 'vboBox' objects: 
   worldBox.init(gl);		// VBO + shaders + uniforms + attribs for our 3D world,
                         // including ground-plane,                       
-  part1Box.init(gl);		//  "		"		"  for 1st kind of shading & lighting
-  part2Box.init(gl);    //  "   "   "  for 2nd kind of shading & lighting
+  gouraudBox.init(gl);		//  "		"		"  for 1st kind of shading & lighting
+  phongBox.init(gl);    //  "   "   "  for 2nd kind of shading & lighting
 	
   gl.clearColor(0.2, 0.2, 0.2, 1);	  // RGBA color for clearing <canvas>
   
@@ -231,43 +207,6 @@ function timerAll() {
     // let's pretend that only a nominal 1/30th second passed:
     elapsedMS = 1000.0/30.0;
     }
-  // Find new time-dependent parameters using the current or elapsed time:
-  // Continuous rotation:
-  g_angleNow0 = g_angleNow0 + (g_angleRate0 * elapsedMS) / 1000.0;
-  g_angleNow1 = g_angleNow1 + (g_angleRate1 * elapsedMS) / 1000.0;
-  g_angleNow2 = g_angleNow2 + (g_angleRate2 * elapsedMS) / 1000.0;
-  g_angleNow0 %= 360.0;   // keep angle >=0.0 and <360.0 degrees  
-  g_angleNow1 %= 360.0;   
-  g_angleNow2 %= 360.0;
-  if(g_angleNow1 > g_angleMax1) { // above the max?
-    g_angleNow1 = g_angleMax1;    // move back down to the max, and
-    g_angleRate1 = -g_angleRate1; // reverse direction of change.
-    }
-  else if(g_angleNow1 < g_angleMin1) {  // below the min?
-    g_angleNow1 = g_angleMin1;    // move back up to the min, and
-    g_angleRate1 = -g_angleRate1;
-    }
-  // Continuous movement:
-  g_posNow0 += g_posRate0 * elapsedMS / 1000.0;
-  g_posNow1 += g_posRate1 * elapsedMS / 1000.0;
-  // apply position limits
-  if(g_posNow0 > g_posMax0) {   // above the max?
-    g_posNow0 = g_posMax0;      // move back down to the max, and
-    g_posRate0 = -g_posRate0;   // reverse direction of change
-    }
-  else if(g_posNow0 < g_posMin0) {  // or below the min? 
-    g_posNow0 = g_posMin0;      // move back up to the min, and
-    g_posRate0 = -g_posRate0;   // reverse direction of change.
-    }
-  if(g_posNow1 > g_posMax1) {   // above the max?
-    g_posNow1 = g_posMax1;      // move back down to the max, and
-    g_posRate1 = -g_posRate1;   // reverse direction of change
-    }
-  else if(g_posNow1 < g_posMin1) {  // or below the min? 
-    g_posNow1 = g_posMin1;      // move back up to the min, and
-    g_posRate1 = -g_posRate1;   // reverse direction of change.
-    }
-
 }
 
 function drawAll() {
@@ -288,14 +227,14 @@ function drawAll() {
 		worldBox.draw();			  // draw our VBO's contents using our shaders.
   }
   if(g_show1 == 1) { // IF user didn't press HTML button to 'hide' VBO1:
-    part1Box.switchToMe();  // Set WebGL to render from this VBObox.
-  	part1Box.adjust();		  // Send new values for uniforms to the GPU, and
-  	part1Box.draw();			  // draw our VBO's contents using our shaders.
+    gouraudBox.switchToMe();  // Set WebGL to render from this VBObox.
+  	gouraudBox.adjust();		  // Send new values for uniforms to the GPU, and
+  	gouraudBox.draw();			  // draw our VBO's contents using our shaders.
 	  }
 	if(g_show2 == 1) { // IF user didn't press HTML button to 'hide' VBO2:
-	  part2Box.switchToMe();  // Set WebGL to render from this VBObox.
-  	part2Box.adjust();		  // Send new values for uniforms to the GPU, and
-    part2Box.draw();			  // draw our VBO's contents using our shaders.
+	  phongBox.switchToMe();  // Set WebGL to render from this VBObox.
+  	phongBox.adjust();		  // Send new values for uniforms to the GPU, and
+    phongBox.draw();			  // draw our VBO's contents using our shaders.
     }
   
 /* // ?How slow is our own code?  	
