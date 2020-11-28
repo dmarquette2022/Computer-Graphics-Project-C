@@ -136,23 +136,6 @@ function main() {
   document.onkeydown= function(ev){keydown(ev); };
   gl.enable(gl.DEPTH_TEST);
 
-  //----------------SOLVE THE 'REVERSED DEPTH' PROBLEM:------------------------
-  // IF the GPU doesn't transform our vertices by a 3D Camera Projection Matrix
-  // (and it doesn't -- not until Project B) then the GPU will compute reversed 
-  // depth values:  depth==0 for vertex z == -1;   (but depth = 0 means 'near') 
-  //		    depth==1 for vertex z == +1.   (and depth = 1 means 'far').
-  //
-  // To correct the 'REVERSED DEPTH' problem, we could:
-  //  a) reverse the sign of z before we render it (e.g. scale(1,1,-1); ugh.)
-  //  b) reverse the usage of the depth-buffer's stored values, like this:
-  gl.enable(gl.DEPTH_TEST); // enabled by default, but let's be SURE.
-
-  gl.clearDepth(0.0);       // each time we 'clear' our depth buffer, set all
-                            // pixel depths to 0.0  (1.0 is DEFAULT)
-  gl.depthFunc(gl.GREATER); // draw a pixel only if its depth value is GREATER
-                            // than the depth buffer's stored value.
-                            // (gl.LESS is DEFAULT; reverse it!)
-  //------------------end 'REVERSED DEPTH' fix---------------------------------
 
 
   // Initialize each of our 'vboBox' objects: 
