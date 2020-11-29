@@ -493,7 +493,7 @@ function VBObox0() {
       'void main() {\n' +
       '  vec4 transVec = u_NormalMatrix * vec4(a_Normal, 0.0);\n' +
       '  vec3 normVec = normalize(transVec.xyz);\n' +
-      '  vec3 lightVec = normalize(vec3(0, 1, 0));\n' +
+      '  vec3 lightVec = vec3(0, 10, 1);\n' +
       '  gl_Position = u_ModelMat0 * a_Pos0;\n' +
       '  float nDotL = dot(normVec, lightVec);\n' +
       '  v_Colr0 = vec4(a_Colr0 * nDotL, 1.0);\n' +
@@ -510,8 +510,9 @@ function VBObox0() {
       this.floatsPerVertex = 10;
       this.sphVerts;
       this.makeSphere();
+      this.makeTriangle();
       this.vboContents = new Float32Array(this.sphVerts);
-      console.log(this.sphVerts.length.toString());
+      console.log(this.triangleVerts.length.toString());
       this.vboVerts = this.sphVerts.length/this.floatsPerVertex;						// # of vertices held in 'vboContents' array
 
       
@@ -832,6 +833,7 @@ VBObox1.prototype.makeUnitSphere = function()
   var p1, p2;
 
   this.sphVerts = [];
+  this.indices = [];
 
   // Generate coordinates
   for (j = 0; j <= SPHERE_DIV; j++) {
@@ -857,6 +859,61 @@ VBObox1.prototype.makeUnitSphere = function()
       this.sphVerts.push(ci * sj);  // Normals
     }
   }
+
+  // Generate indices
+  for (j = 0; j < SPHERE_DIV; j++) {
+    for (i = 0; i < SPHERE_DIV; i++) {
+      p1 = j * (SPHERE_DIV+1) + i;
+      p2 = p1 + (SPHERE_DIV+1);
+
+      indices.push(p1);
+      indices.push(p2);
+      indices.push(p1 + 1);
+
+      indices.push(p1 + 1);
+      indices.push(p2);
+      indices.push(p2 + 1);
+    }
+  }
+}
+
+VBObox1.prototype.makeTriangle = function(){
+  // Node 0 (apex, +z axis; 			color--blue, 				surf normal (all verts):
+  var c30 = Math.sqrt(0.75);					// == cos(30deg) == sqrt(3) / 2
+	var sq2	= Math.sqrt(2.0);						 
+	// for surface normals:
+	var sq23 = Math.sqrt(2.0/3.0)
+	var sq29 = Math.sqrt(2.0/9.0)
+	var sq89 = Math.sqrt(8.0/9.0)
+	var thrd = 1.0/3.0;
+  this.triangleVerts = [
+    0.0,	 0.0, sq2, 1.0,			0.0, 	0.0,	1.0,		 sq23,	sq29, thrd,
+  // Node 1 (base: lower rt; red)
+        c30, -0.5, 0.0, 1.0, 			1.0,  0.0,  0.0, 		sq23,	sq29, thrd,
+  // Node 2 (base: +y axis;  grn)
+        0.0,  1.0, 0.0, 1.0,  		0.0,  1.0,  0.0,		sq23,	sq29, thrd, 
+// Face 1: (left side).		Unit Normal Vector: N1 = (-sq23, sq29, thrd)
+  // Node 0 (apex, +z axis;  blue)
+        0.0,	 0.0, sq2, 1.0,			0.0, 	0.0,	1.0,	 -sq23,	sq29, thrd,
+  // Node 2 (base: +y axis;  grn)
+        0.0,  1.0, 0.0, 1.0,  		0.0,  1.0,  0.0,	 -sq23,	sq29, thrd,
+  // Node 3 (base:lower lft; white)
+       -c30, -0.5, 0.0, 1.0, 		1.0,  1.0,  1.0, 	 -sq23,	sq29,	thrd,
+// Face 2: (lower side) 	Unit Normal Vector: N2 = (0.0, -sq89, thrd)
+  // Node 0 (apex, +z axis;  blue) 
+        0.0,	 0.0, sq2, 1.0,			0.0, 	0.0,	1.0,		0.0, -sq89,	thrd,
+ // Node 3 (base:lower lft; white)
+       -c30, -0.5, 0.0, 1.0, 		1.0,  1.0,  1.0, 		0.0, -sq89,	thrd,          																							//0.0, 0.0, 0.0, // Normals debug
+  // Node 1 (base: lower rt; red) 
+        c30, -0.5, 0.0, 1.0, 			1.0,  0.0,  0.0, 		0.0, -sq89,	thrd,
+// Face 3: (base side)  Unit Normal Vector: N2 = (0.0, 0.0, -1.0)
+ // Node 3 (base:lower lft; white)
+       -c30, -0.5, 0.0, 1.0, 		1.0,  1.0,  1.0, 		0.0, 	0.0, -1.0,
+ // Node 2 (base: +y axis;  grn)
+        0.0,  1.0, 0.0, 1.0,  		0.0,  1.0,  0.0,		0.0, 	0.0, -1.0,
+ // Node 1 (base: lower rt; red)
+        c30, -0.5, 0.0, 1.0, 			1.0,  0.0,  0.0, 		0.0, 	0.0, -1.0,
+];
 }
 
 
@@ -914,24 +971,24 @@ VBObox1.prototype.makeSphere = function() {
 								// and thus we can simplify cos(2*PI(v/2*sliceVerts))  
 					this.sphVerts[j  ] = sin0 * Math.cos(Math.PI*(v)/sliceVerts); 	
 					this.sphVerts[j+1] = sin0 * Math.sin(Math.PI*(v)/sliceVerts);	
-					this.sphVerts[j+2] = cos0;		
+					this.sphVerts[j+2] = -cos0;		
           this.sphVerts[j+3] = 1.0;
           
           this.sphVerts[j+7]= sin0 * Math.cos(Math.PI*(v)/sliceVerts); 
 					this.sphVerts[j+8]= sin0 * Math.sin(Math.PI*(v)/sliceVerts);
-					this.sphVerts[j+9]= cos0;	
+					this.sphVerts[j+9]= -cos0;	
 				}
 				else { 	// put odd# vertices around the slice's lower edge;
 								// x,y,z,w == cos(theta),sin(theta), 1.0, 1.0
 								// 					theta = 2*PI*((v-1)/2)/capVerts = PI*(v-1)/capVerts
 					this.sphVerts[j  ] = sin1 * Math.cos(Math.PI*(v-1)/sliceVerts);		// x
 					this.sphVerts[j+1] = sin1 * Math.sin(Math.PI*(v-1)/sliceVerts);		// y
-					this.sphVerts[j+2] = cos1;																				// z
+					this.sphVerts[j+2] = -cos1;																				// z
           this.sphVerts[j+3] = 1.0;																				// w.		
           
           this.sphVerts[j+7]= sin1 * Math.cos(Math.PI*(v-1)/sliceVerts); 
 					this.sphVerts[j+8]= sin1 * Math.sin(Math.PI*(v-1)/sliceVerts);
-					this.sphVerts[j+9]= cos1;
+					this.sphVerts[j+9]= -cos1;
 				}
 				if(s==0) {	// finally, set some interesting colors for vertices:
 					this.sphVerts[j+4]=0;
