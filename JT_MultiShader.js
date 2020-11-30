@@ -92,14 +92,13 @@ var g_show0 = 1;								// 0==Show, 1==Hide VBO0 contents on-screen.
 var g_show1 = 0;								// 	"					"			VBO1		"				"				" 
 var g_show2 = 0;                //  "         "     VBO2    "       "       "
 
-var g_EyeX = -5, g_EyeY = 0, g_EyeZ = 0; 
-var g_LookatZ = 0;
-var theta = 0;
+var g_EyeX = 5, g_EyeY = 0, g_EyeZ = 0; 
+var theta = 180;
 var g_LookAtX = g_EyeX + Math.cos(theta * (Math.PI/180));
 var g_LookAtY = g_EyeY + Math.sin(theta * (Math.PI/180));
-var g_DisplaceX = (g_LookAtX - g_EyeX) * 0.2;
-var g_DisplaceY = (g_LookAtY - g_EyeY) * 0.2;
-var g_DisplaceZ = (g_LookatZ - g_EyeZ) * 0.2;
+var g_LookatZ = 0;
+
+
 
 
 
@@ -135,7 +134,7 @@ function main() {
   gl.clearColor(0.2, 0.2, 0.2, 1);	  // RGBA color for clearing <canvas>
   document.onkeydown= function(ev){keydown(ev); };
   gl.enable(gl.DEPTH_TEST);
-
+  g_worldMat = new Matrix4();	
 
 
   // Initialize each of our 'vboBox' objects: 
@@ -143,7 +142,7 @@ function main() {
                         // including ground-plane,                       
   gouraudBox.init(gl);		//  "		"		"  for 1st kind of shading & lighting
   phongBox.init(gl);    //  "   "   "  for 2nd kind of shading & lighting
-	
+	setCamera();
   gl.clearColor(0.2, 0.2, 0.2, 1);	  // RGBA color for clearing <canvas>
   
   // ==============ANIMATION=============
@@ -170,6 +169,8 @@ function main() {
                                 // til browser is ready to re-draw canvas, then
     timerAll();  // Update all time-varying params, and
     drawAll();                // Draw all the VBObox contents
+    g_canvasID.width = window.innerWidth - xtraMargin;
+    g_canvasID.height = (window.innerHeight*3/4) - xtraMargin; 
     };
   //------------------------------------
   tick();                       // do it again!
@@ -203,6 +204,7 @@ function drawAll() {
   aspect = g_canvasID.width/g_canvasID.height;
   var b4Draw = Date.now();
   var b4Wait = b4Draw - g_lastMS;
+  setCamera();
   
 	if(g_show0 == 1) {	// IF user didn't press HTML button to 'hide' VBO0:
 	  worldBox.switchToMe();  // Set WebGL to render from this VBObox.
@@ -219,6 +221,7 @@ function drawAll() {
   	phongBox.adjust();		  // Send new values for uniforms to the GPU, and
     phongBox.draw();			  // draw our VBO's contents using our shaders.
     }
+    
   
 /* // ?How slow is our own code?  	
 var aftrDraw = Date.now();
@@ -251,6 +254,20 @@ function VBO2toggle() {
   console.log('g_show2: '+g_show2);
 }
 
+function setCamera() {
+  //============================================================================
+  // PLACEHOLDER:  sets a fixed camera at a fixed position for use by
+  // ALL VBObox objects.  REPLACE This with your own camera-control code.
+  
+    g_worldMat.setIdentity();
+    g_worldMat.perspective(30, aspect, 1.0, 500.0);
+    g_worldMat.lookAt(g_EyeX, g_EyeY, g_EyeZ,	// center of projection
+      g_LookAtX, g_LookAtY, g_LookatZ,	// look-at point 
+      0, 0, 1);
+    // READY to draw in the 'world' coordinate system.
+  //------------END COPY
+  
+  }
 function keydown(ev) {
 	//------------------------------------------------------
 	//HTML calls this'Event handler' or 'callback function' when we press a key:
@@ -260,16 +277,15 @@ function keydown(ev) {
 
 		rotatedX = (g_DisplaceX * Math.cos(90 * (Math.PI/180))) - (g_DisplaceY * Math.sin(90 * (Math.PI/180)));
 		rotatedY = (g_DisplaceX * Math.sin(90 * (Math.PI/180))) + (g_DisplaceY * Math.cos(90 * (Math.PI/180)));
-
+    theta = theta
 		
 		if(ev.keyCode == 39) { // The right arrow key was pressed
 	//      g_EyeX += 0.01;
 					g_EyeX -= rotatedX;		// INCREASED for perspective camera)
 					g_EyeY -= rotatedY;
-          console.log("hi")
 					g_LookAtX -= rotatedX;
 					g_LookAtY -= rotatedY;
-					circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
+					//circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
 		} else 
 		if(ev.keyCode == 38) { // The up arrow key was pressed
 			//      g_EyeX += 0.01;
@@ -280,7 +296,7 @@ function keydown(ev) {
 							g_LookAtX += g_DisplaceX;
 							g_LookAtY += g_DisplaceY;
 							g_LookatZ += g_DisplaceZ;
-							circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
+							//circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
 				} else 
 		if(ev.keyCode == 40) { // The up arrow key was pressed
 			//      g_EyeX += 0.01;
@@ -291,22 +307,24 @@ function keydown(ev) {
 							g_LookAtX -= g_DisplaceX;
 							g_LookAtY -= g_DisplaceY;
 							g_LookatZ -= g_DisplaceZ;
-							circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
+							//circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
 				} else
-		if(ev.keyCode == 68) { //D Key
-							theta -= 1;
+    if(ev.keyCode == 68) { //D Key
+      console.log(theta)
+							theta -= 0.5;
 							g_LookAtX = g_EyeX + Math.cos(theta * (Math.PI/180));
 							g_LookAtY = g_EyeY + Math.sin(theta * (Math.PI/180));
 				} else 
-		if(ev.keyCode == 65) { //A Key
-							theta += 1;
+    if(ev.keyCode == 65) { //A Key
+              console.log(theta)
+							theta += 0.5;
 							g_LookAtX = g_EyeX + Math.cos(theta * (Math.PI/180));
 							g_LookAtY = g_EyeY + Math.sin(theta * (Math.PI/180));
 				} else
 		if(ev.keyCode == 87) { //W Key
 							g_LookatZ += 0.04;
 				} else
-		if(ev.keyCode == 83) { //S Key
+		if(ev.keyCode == 83) { //S Keyaw
 							g_LookatZ -= 0.04;
 				} else 
 		if (ev.keyCode == 37) { // The left arrow key was pressed
@@ -316,6 +334,6 @@ function keydown(ev) {
 
 					g_LookAtX += rotatedX;
 					g_LookAtY += rotatedY;
-					circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
+					//circleAng = (Math.asin(g_EyeX/g_EyeY) * (180/Math.PI)) % 360;
 		} else { return; } // Prevent the unnecessary drawing   
 	}
