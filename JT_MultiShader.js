@@ -80,7 +80,7 @@ var g_canvasID;									// HTML-5 'canvas' element ID#
 // For multiple VBOs & Shaders:-----------------
 worldBox = new VBObox0();		  // Holds VBO & shaders for 3D 'world' ground-plane grid, etc;
 gouraudBox = new VBObox1();		  // "  "  for first set of custom-shaded 3D parts
-phongBox = new VBObox2();     // "  "  for second set of custom-shaded 3D parts
+phongBox = new VBObox3();     // "  "  for second set of custom-shaded 3D parts
 
 // For animation:---------------------
 var g_lastMS = Date.now();			// Timestamp (in milliseconds) for our 
