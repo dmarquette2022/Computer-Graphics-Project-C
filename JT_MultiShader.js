@@ -41,10 +41,10 @@ USAGE:
  For simplicity, make it a global variable. As you only have ONE of these 
  objects, its global scope is unlikely to cause confusions/errors, and you can
  avoid its too-frequent use as a function argument.
- (e.g. above main(), write:    var phongBox = new VBObox3();  )
+ (e.g. above main(), write:    var gourardBox2 = new VBObox3();  )
 
  c) INITIALIZE: in your JS progam's main() function, initialize your new VBObox;
- (e.g. inside main(), write:  phongBox.init(); )
+ (e.g. inside main(), write:  gourardBox2.init(); )
 
  d) DRAW: in the JS function that performs all your webGL-drawing tasks, draw
  your new VBObox's contents on-screen. 
@@ -55,8 +55,8 @@ USAGE:
   --THUS-- be sure to comment out the earlier VBObox's draw() function call  
   to see the draw() result of your new VBObox on-screen).
   (e.g. inside drawAll(), add this:  
-      phongBox.switchToMe();
-      phongBox.draw();            )
+      gourardBox2.switchToMe();
+      gourardBox2.draw();            )
 
  e) ADJUST: Inside the JS function that animates your webGL drawing by adjusting
  uniforms (updates to ModelMatrix, etc) call the 'adjust' function for each of your
@@ -80,7 +80,9 @@ var g_canvasID;									// HTML-5 'canvas' element ID#
 // For multiple VBOs & Shaders:-----------------
 worldBox = new VBObox0();		  // Holds VBO & shaders for 3D 'world' ground-plane grid, etc;
 gouraudBox = new VBObox1();		  // "  "  for first set of custom-shaded 3D parts
-phongBox = new VBObox3();     // "  "  for second set of custom-shaded 3D parts
+gourardBox2 = new VBObox3();     // "  "  for second set of custom-shaded 3D parts
+phongBox = new VBObox4();     // "  "  for second set of custom-shaded 3D parts
+phongBox2 = new VBObox5();
 
 // For animation:---------------------
 var g_lastMS = Date.now();			// Timestamp (in milliseconds) for our 
@@ -91,6 +93,8 @@ var g_lastMS = Date.now();			// Timestamp (in milliseconds) for our
 var g_show0 = 1;								// 0==Show, 1==Hide VBO0 contents on-screen.
 var g_show1 = 0;								// 	"					"			VBO1		"				"				" 
 var g_show2 = 0;                //  "         "     VBO2    "       "       "
+var g_show3 = 0;
+var g_show4 = 0;
 
 var g_EyeX = 5, g_EyeY = 0, g_EyeZ = 0; 
 var theta = 180;
@@ -141,7 +145,9 @@ function main() {
   worldBox.init(gl);		// VBO + shaders + uniforms + attribs for our 3D world,
                         // including ground-plane,                       
   gouraudBox.init(gl);		//  "		"		"  for 1st kind of shading & lighting
-  phongBox.init(gl);    //  "   "   "  for 2nd kind of shading & lighting
+  gourardBox2.init(gl);    //  "   "   "  for 2nd kind of shading & lighting
+  phongBox.init(gl);
+  phongBox2.init(gl);
 	setCamera();
   gl.clearColor(0.2, 0.2, 0.2, 1);	  // RGBA color for clearing <canvas>
   
@@ -217,10 +223,22 @@ function drawAll() {
   	gouraudBox.draw();			  // draw our VBO's contents using our shaders.
 	  }
 	if(g_show2 == 1) { // IF user didn't press HTML button to 'hide' VBO2:
-	  phongBox.switchToMe();  // Set WebGL to render from this VBObox.
+	  gourardBox2.switchToMe();  // Set WebGL to render from this VBObox.
+  	gourardBox2.adjust();		  // Send new values for uniforms to the GPU, and
+    gourardBox2.draw();			  // draw our VBO's contents using our shaders.
+    }
+  if(g_show3 == 1){
+    phongBox.switchToMe();  // Set WebGL to render from this VBObox.
   	phongBox.adjust();		  // Send new values for uniforms to the GPU, and
     phongBox.draw();			  // draw our VBO's contents using our shaders.
-    }
+  }
+  if(g_show4 == 1){
+    phongBox2.switchToMe();  // Set WebGL to render from this VBObox.
+  	phongBox2.adjust();		  // Send new values for uniforms to the GPU, and
+    phongBox2.draw();			  // draw our VBO's contents using our shaders.
+  }
+
+
     
   
 /* // ?How slow is our own code?  	
@@ -253,6 +271,20 @@ function VBO2toggle() {
   else g_show2 = 0;									// hide.
   console.log('g_show2: '+g_show2);
 }
+
+function VBO3toggle() {
+  //=============================================================================
+  // Called when user presses HTML-5 button 'Show/Hide VBO2'.
+    if(g_show3 != 1) g_show3 = 1;			// show,
+    else g_show3 = 0;									// hide.
+  }
+
+function VBO4toggle() {
+  //=============================================================================
+  // Called when user presses HTML-5 button 'Show/Hide VBO2'.
+    if(g_show4 != 1) g_show4 = 1;			// show,
+    else g_show4 = 0;									// hide.
+  }
 
 function setCamera() {
   //============================================================================
