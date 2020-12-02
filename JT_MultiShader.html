@@ -10,11 +10,47 @@
     Please use a browser that supports "canvas"
     </canvas>
     <p>
-      <button type="button" onclick="VBO0toggle()">Show/Hide Grid</button>
       <button type="button" onclick="VBO1toggle()">Show/Hide Gouraud Shading w/ Phong Lighting</button>
       <button type="button" onclick="VBO2toggle()">Show/Hide Gourard Shading w/ Blinn-Phong Lighting</button>
       <button type="button" onclick="VBO3toggle()">Show/Hide Phong Shading w/ Blinn-Phong Lighting</button>
       <button type="button" onclick="VBO4toggle()">Show/Hide Phong Shading w/ Phong Lighting</button>
+      <p id="x">
+      </p>
+      X: <input type="range" min="-100" max="100" value="5" class="slider" id="lx">
+      <br>
+      Y :<input type="range" min="-100" max="100" value="5" class="slider" id="ly">
+      <br>
+      Z :<input type="range" min="-100" max="100" value="5" class="slider" id="lz">
+      <br>
+      <br>
+      Ambient Lighting
+      <br>
+      Red Value : <input type="range" min="0" max="100" value="50" class="slider" id="a_r">
+      <br>
+      Green Value : <input type="range" min="0" max="100" value="50" class="slider" id="a_g">
+      <br>
+      Blue Value : <input type="range" min="0" max="100" value="50" class="slider" id="a_b">
+      <br>
+      <br>
+      Diffuse Lighting
+      <br>
+      Red Value : <input type="range" min="0" max="100" value="50" class="slider" id="d_r">
+      <br>
+      Green Value : <input type="range" min="0" max="100" value="50" class="slider" id="d_g">
+      <br>
+      Blue Value :<input type="range" min="0" max="100" value="50" class="slider" id="d_b">
+      <br>
+      <br>
+      Specular Lighting
+      <br>
+      Red Value : <input type="range" min="0" max="100" value="50" class="slider" id="s_r">
+      <br>
+      Green Value : <input type="range" min="0" max="100" value="50" class="slider" id="s_g">
+      <br>
+      Blue Value : <input type="range" min="0" max="100" value="50" class="slider" id="s_b">
+      <br>
+      <br>
+      
     </p>
     <script src="lib/webgl-utils.js"></script>
     <script src="lib/webgl-debug.js"></script>
@@ -26,5 +62,6 @@
 --> 
 		<script src="JT_VBObox-Lib.js"></script>
     <script src="JT_MultiShader.js"></script>
+
   </body>
 </html>

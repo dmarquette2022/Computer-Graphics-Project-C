@@ -96,11 +96,11 @@ var g_show2 = 0;                //  "         "     VBO2    "       "       "
 var g_show3 = 0;
 var g_show4 = 0;
 
-var g_EyeX = 5, g_EyeY = 0, g_EyeZ = 0; 
+var g_EyeX = 20, g_EyeY = 0, g_EyeZ = 11; 
 var theta = 180;
 var g_LookAtX = g_EyeX + Math.cos(theta * (Math.PI/180));
 var g_LookAtY = g_EyeY + Math.sin(theta * (Math.PI/180));
-var g_LookatZ = 0;
+var g_LookatZ = 10.6;
 
 
 
@@ -211,7 +211,7 @@ function drawAll() {
   var b4Draw = Date.now();
   var b4Wait = b4Draw - g_lastMS;
   setCamera();
-  
+  document.getElementById("x").innerHTML = "Light Source Coordinates : " + document.getElementById("lx").value.toString() +", "+document.getElementById("ly").value.toString() +", "+document.getElementById("lz").value.toString().toString()
 	if(g_show0 == 1) {	// IF user didn't press HTML button to 'hide' VBO0:
 	  worldBox.switchToMe();  // Set WebGL to render from this VBObox.
 		worldBox.adjust();		  // Send new values for uniforms to the GPU, and
