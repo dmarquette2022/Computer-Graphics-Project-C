@@ -503,16 +503,15 @@ function VBObox0() {
       'uniform vec3 u_DiffuseLight;\n' +   // Diffuse light color
       'uniform vec3 u_SpecularLight;\n' +   // Specular light color
       'uniform float shininessVal;\n' +
-      'uniform float Ka;\n' +
-      'uniform float Kd;\n' +
-      'uniform float Ks;\n' +
+      'uniform vec3 Ka;\n' +
+      'uniform vec3 Kd;\n' +
+      'uniform vec3 Ks;\n' +
       'attribute vec4 a_Pos0;\n' +
       'attribute vec3 a_Normal;\n' +
       'varying vec4 v_Colr0;\n' +
 
       //
       'void main() {\n' +
-      '  vec4 color = vec4(0.5, 0.5, 0.5, 1.0);\n' +
       '  gl_Position = u_ModelMat0 * a_Pos0;\n' +
       '  vec4 vertexPosition = u_ModelMat0 * a_Pos0;\n' +
       '  vec4 transVec = u_NormalMatrix * vec4(a_Normal, 0.0);\n' +
@@ -523,8 +522,8 @@ function VBObox0() {
       '  float nDotL = max(dot(lightVec, normVec), 0.0);\n' +
       '  float rDotV = max(dot(reflect, eyeDirection), 0.0);\n' +
       '  float spec = pow(rDotV, shininessVal);\n' +
-      '  vec3 ambient = u_AmbientLight * color.rgb * Ka;\n' +
-      '  vec3 diffuse = color.rgb * nDotL * u_DiffuseLight * Kd;\n' +
+      '  vec3 ambient = u_AmbientLight * Ka;\n' +
+      '  vec3 diffuse = nDotL * u_DiffuseLight * Kd;\n' +
       '  vec3 specular = spec * u_SpecularLight * Ks;\n' +
       '  v_Colr0 = vec4(diffuse + ambient + specular, 1.0);\n' +
       ' }\n';
@@ -956,15 +955,14 @@ function VBObox0() {
     this.light_z = document.getElementById("lz").value
 
   
-
+      gl.uniform1f(this.shinyLoc, shinyVal);
+      gl.uniform3f(this.u_KsLoc, specularVal[0], specularVal[1], specularVal[2]);
+      gl.uniform3f(this.u_KdLoc, diffuseVal[0], diffuseVal[1], diffuseVal[2]);
+      gl.uniform3f(this.u_KaLoc, ambientVal[0], ambientVal[1], ambientVal[2]);
       gl.uniform3f(this.u_LightPositionLoc, this.light_x, this.light_y,this.light_z)
       gl.uniform3f(this.u_AmbientLightLoc, this.a_red,this.a_green,this.a_blue);
       gl.uniform3f(this.u_DiffuseLightLoc, this.d_red,this.d_green,this.d_blue);
       gl.uniform3f(this.u_SpecLightLoc, this.s_red,this.s_green,this.s_blue);
-      gl.uniform1f(this.shinyLoc, 80);
-      gl.uniform1f(this.u_KsLoc, 1.0);
-      gl.uniform1f(this.u_KdLoc, 1.0);
-      gl.uniform1f(this.u_KaLoc, 1.0);
       gl.uniform3f(this.u_eyePosLoc, g_EyeX, g_EyeY, g_EyeZ);
       
       this.ModelMat.setIdentity();
@@ -1141,9 +1139,9 @@ function VBObox3() {
     'uniform vec3 u_DiffuseLight;\n' +   // Diffuse light color
     'uniform vec3 u_SpecularLight;\n' +   // Specular light color
     'uniform float shininessVal;\n' +
-    'uniform float Ka;\n' +
-    'uniform float Kd;\n' +
-    'uniform float Ks;\n' +
+    'uniform vec3 Ka;\n' +
+    'uniform vec3 Kd;\n' +
+    'uniform vec3 Ks;\n' +
     'attribute vec4 a_Pos0;\n' +
     'attribute vec3 a_Normal;\n' +
     'varying vec4 v_Colr0;\n' +
@@ -1161,8 +1159,8 @@ function VBObox3() {
     '  float nDotL = max(dot(lightVec, normVec), 0.0);\n' +
     '  float nDotH = max(dot(H, normVec), 0.0);\n' +
     '  float spec = pow(nDotH, shininessVal);\n' +
-    '  vec3 ambient = u_AmbientLight * color.rgb * Ka;\n' +
-    '  vec3 diffuse = color.rgb * nDotL * u_DiffuseLight * Kd;\n' +
+    '  vec3 ambient = u_AmbientLight * Ka;\n' +
+    '  vec3 diffuse = nDotL * u_DiffuseLight * Kd;\n' +
     '  vec3 specular = spec * u_SpecularLight * Ks;\n' +
     '  v_Colr0 = vec4(diffuse + ambient + specular, 1.0);\n' +
     ' }\n';
@@ -1595,10 +1593,10 @@ function VBObox3() {
     gl.uniform3f(this.u_AmbientLightLoc, this.a_red,this.a_green,this.a_blue);
     gl.uniform3f(this.u_DiffuseLightLoc, this.d_red,this.d_green,this.d_blue)
     gl.uniform3f(this.u_SpecLightLoc, this.s_red,this.s_green,this.s_blue);
-    gl.uniform1f(this.shinyLoc, 80);
-    gl.uniform1f(this.u_KsLoc, 1.0);
-    gl.uniform1f(this.u_KdLoc, 1.0);
-    gl.uniform1f(this.u_KaLoc, 1.0);
+    gl.uniform1f(this.shinyLoc, shinyVal);
+    gl.uniform3f(this.u_KsLoc, specularVal[0], specularVal[1], specularVal[2]);
+    gl.uniform3f(this.u_KdLoc, diffuseVal[0], diffuseVal[1], diffuseVal[2]);
+    gl.uniform3f(this.u_KaLoc, ambientVal[0], ambientVal[1], ambientVal[2]);
     gl.uniform3f(this.u_eyePosLoc, g_EyeX, g_EyeY, g_EyeZ);
     
     // Adjust values for our uniforms,
@@ -1727,11 +1725,11 @@ function VBObox4() {
     //
     'uniform mat4 u_ModelMat0;\n' +
     'uniform mat4 u_NormalMatrix;\n' +
-    'uniform float u_Kd; \n' +
+    'uniform vec3 u_Kd; \n' +
     'attribute vec4 a_Pos0;\n' +
     'attribute vec3 a_Normal;\n' +
     	//-------------VARYING:Vertex Shader values sent per-pixel to Fragment shader:
-	  'varying float v_Kd; \n' +							// Phong Lighting: diffuse reflectance
+	  'varying vec3 v_Kd; \n' +							// Phong Lighting: diffuse reflectance
     // (I didn't make per-pixel Ke,Ka,Ks;
     // we use 'uniform' values instead)
     'varying vec4 v_Position; \n' +				
@@ -1748,9 +1746,9 @@ function VBObox4() {
     this.FRAG_SRC = //---------------------- FRAGMENT SHADER source code 
     'precision highp float;\n' +
     'precision highp int;\n' +
-    'uniform float Ka;\n' +						// Phong Reflectance: ambient
+    'uniform vec3 Ka;\n' +						// Phong Reflectance: ambient
 	  // no Phong Reflectance: diffuse? -- no: use v_Kd instead for per-pixel value
-    'uniform float Ks;\n' +						// Phong Reflectance: specular
+    'uniform vec3 Ks;\n' +						// Phong Reflectance: specular
     'uniform float u_ShininessVal;\n' +				// Phong Reflectance: 1 < shiny < 128
     'uniform vec3 u_eyePos;\n' + 	// Camera/eye location in world coords.
     'uniform vec3 u_LightPosition;\n' +
@@ -1759,12 +1757,11 @@ function VBObox4() {
     'uniform vec3 u_SpecularLight;\n' +   // Specular light color
 
 
-    'varying float v_Kd; \n' +							// Phong Lighting: diffuse reflectance
+    'varying vec3 v_Kd; \n' +							// Phong Lighting: diffuse reflectance
     'varying vec4 v_Position; \n' +				
     'varying vec3 v_Normal; \n' +					// Why Vec3? its not a point, hence w==0
     'varying vec4 v_Colr0;\n' +
     'void main() {\n' +
-    '  vec4 color = vec4(0.5, 0.5, 0.5, 1.0);\n' +
     
     '  vec3 normal = normalize(v_Normal);\n' +
     '  vec3 lightVec = normalize(u_LightPosition - vec3(v_Position));\n' +
@@ -1774,8 +1771,8 @@ function VBObox4() {
     '  vec3 H = normalize(lightVec + eyeDirection); \n' +
     '  float nDotH = max(dot(H, normal), 0.0);\n' +
     '  float spec = pow(nDotH, float(u_ShininessVal));\n' +
-    '  vec3 ambient = u_AmbientLight * color.rgb * Ka;\n' +
-    '  vec3 diffuse = color.rgb * nDotL * u_DiffuseLight * v_Kd;\n' +
+    '  vec3 ambient = u_AmbientLight * Ka;\n' +
+    '  vec3 diffuse = nDotL * u_DiffuseLight * v_Kd;\n' +
     '  vec3 specular = spec * u_SpecularLight * Ks;\n' +
     '  gl_FragColor = vec4(ambient + diffuse + specular, 1.0);\n' + 
 
@@ -2202,10 +2199,10 @@ function VBObox4() {
     gl.uniform3f(this.u_AmbientLightLoc, this.a_red,this.a_green,this.a_blue);
     gl.uniform3f(this.u_DiffuseLightLoc, this.d_red,this.d_green,this.d_blue)
     gl.uniform3f(this.u_SpecLightLoc, this.s_red,this.s_green,this.s_blue);
-    gl.uniform1f(this.shinyLoc, 80.0);
-    gl.uniform1f(this.u_KsLoc, 1.0);
-    gl.uniform1f(this.u_KdLoc, 1.0);
-    gl.uniform1f(this.u_KaLoc, 1.0);
+    gl.uniform1f(this.shinyLoc, shinyVal);
+    gl.uniform3f(this.u_KsLoc, specularVal[0], specularVal[1], specularVal[2]);
+    gl.uniform3f(this.u_KdLoc, diffuseVal[0], diffuseVal[1], diffuseVal[2]);
+    gl.uniform3f(this.u_KaLoc, ambientVal[0], ambientVal[1], ambientVal[2]);
     gl.uniform3f(this.u_eyePosLoc, g_EyeX, g_EyeY, g_EyeZ);
     
     // Adjust values for our uniforms,
@@ -2332,11 +2329,11 @@ function VBObox5() {
     //
     'uniform mat4 u_ModelMat0;\n' +
     'uniform mat4 u_NormalMatrix;\n' +
-    'uniform float u_Kd; \n' +
+    'uniform vec3 u_Kd; \n' +
     'attribute vec4 a_Pos0;\n' +
     'attribute vec3 a_Normal;\n' +
     	//-------------VARYING:Vertex Shader values sent per-pixel to Fragment shader:
-	  'varying float v_Kd; \n' +							// Phong Lighting: diffuse reflectance
+	  'varying vec3 v_Kd; \n' +							// Phong Lighting: diffuse reflectance
     // (I didn't make per-pixel Ke,Ka,Ks;
     // we use 'uniform' values instead)
     'varying vec4 v_Position; \n' +				
@@ -2353,9 +2350,9 @@ function VBObox5() {
     this.FRAG_SRC = //---------------------- FRAGMENT SHADER source code 
     'precision highp float;\n' +
     'precision highp int;\n' +
-    'uniform float Ka;\n' +						// Phong Reflectance: ambient
+    'uniform vec3 Ka;\n' +						// Phong Reflectance: ambient
 	  // no Phong Reflectance: diffuse? -- no: use v_Kd instead for per-pixel value
-    'uniform float Ks;\n' +						// Phong Reflectance: specular
+    'uniform vec3 Ks;\n' +						// Phong Reflectance: specular
     'uniform float u_ShininessVal;\n' +				// Phong Reflectance: 1 < shiny < 128
     'uniform vec3 u_eyePos;\n' + 	// Camera/eye location in world coords.
     'uniform vec3 u_LightPosition;\n' +
@@ -2363,12 +2360,11 @@ function VBObox5() {
     'uniform vec3 u_DiffuseLight;\n' +   // Diffuse light color
     'uniform vec3 u_SpecularLight;\n' +   // Specular light color
 
-    'varying float v_Kd; \n' +							// Phong Lighting: diffuse reflectance
+    'varying vec3 v_Kd; \n' +							// Phong Lighting: diffuse reflectance
     'varying vec4 v_Position; \n' +				
     'varying vec3 v_Normal; \n' +					// Why Vec3? its not a point, hence w==0
     'varying vec4 v_Colr0;\n' +
     'void main() {\n' +
-    '  vec4 color = vec4(0.5, 0.5, 0.5, 1.0);\n' +
     
     '  vec3 normal = normalize(v_Normal);\n' +
     '  vec3 lightVec = normalize(u_LightPosition - vec3(v_Position));\n' +
@@ -2378,8 +2374,8 @@ function VBObox5() {
     '  float rDotV = max(dot(reflect, eyeDirection), 0.0);\n' +
 
     '  float spec = pow(rDotV, float(u_ShininessVal));\n' +
-    '  vec3 ambient = u_AmbientLight * color.rgb * Ka;\n' +
-    '  vec3 diffuse = color.rgb * nDotL * u_DiffuseLight * v_Kd;\n' +
+    '  vec3 ambient = u_AmbientLight * Ka;\n' +
+    '  vec3 diffuse = nDotL * u_DiffuseLight * v_Kd;\n' +
     '  vec3 specular = spec * u_SpecularLight * Ks;\n' +
     '  gl_FragColor = vec4(ambient + diffuse + specular, 1.0);\n' + 
 
@@ -2806,10 +2802,10 @@ function VBObox5() {
     gl.uniform3f(this.u_AmbientLightLoc, this.a_red,this.a_green,this.a_blue);
     gl.uniform3f(this.u_DiffuseLightLoc, this.d_red,this.d_green,this.d_blue)
     gl.uniform3f(this.u_SpecLightLoc, this.s_red,this.s_green,this.s_blue);
-    gl.uniform1f(this.shinyLoc, 80.0);
-    gl.uniform1f(this.u_KsLoc, 1.0);
-    gl.uniform1f(this.u_KdLoc, 1.0);
-    gl.uniform1f(this.u_KaLoc, 1.0);
+    gl.uniform1f(this.shinyLoc, shinyVal);
+    gl.uniform3f(this.u_KsLoc, specularVal[0], specularVal[1], specularVal[2]);
+    gl.uniform3f(this.u_KdLoc, diffuseVal[0], diffuseVal[1], diffuseVal[2]);
+    gl.uniform3f(this.u_KaLoc, ambientVal[0], ambientVal[1], ambientVal[2]);
     gl.uniform3f(this.u_eyePosLoc, g_EyeX, g_EyeY, g_EyeZ);
     
     // Adjust values for our uniforms,

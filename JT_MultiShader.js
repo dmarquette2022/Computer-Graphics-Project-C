@@ -102,6 +102,13 @@ var g_LookAtX = g_EyeX + Math.cos(theta * (Math.PI/180));
 var g_LookAtY = g_EyeY + Math.sin(theta * (Math.PI/180));
 var g_LookatZ = 10.6;
 
+var diffuseVal;
+var specularVal;
+var ambientVal;
+var shinyVal;
+
+var matlSel = MATL_RED_PLASTIC;
+var matl0 = new Material(matlSel);
 
 
 
@@ -148,7 +155,8 @@ function main() {
   gourardBox2.init(gl);    //  "   "   "  for 2nd kind of shading & lighting
   phongBox.init(gl);
   phongBox2.init(gl);
-	setCamera();
+  setCamera();
+  setVals();
   gl.clearColor(0.2, 0.2, 0.2, 1);	  // RGBA color for clearing <canvas>
   
   // ==============ANIMATION=============
@@ -180,6 +188,13 @@ function main() {
     };
   //------------------------------------
   tick();                       // do it again!
+}
+
+function setVals(){
+  diffuseVal = matl0.K_diff;
+  ambientVal = matl0.K_ambi;
+  specularVal = matl0.K_spec;
+  shinyVal = matl0.K_shiny;
 }
 
 function timerAll() {
@@ -310,7 +325,15 @@ function keydown(ev) {
 		rotatedX = (g_DisplaceX * Math.cos(90 * (Math.PI/180))) - (g_DisplaceY * Math.sin(90 * (Math.PI/180)));
 		rotatedY = (g_DisplaceX * Math.sin(90 * (Math.PI/180))) + (g_DisplaceY * Math.cos(90 * (Math.PI/180)));
     theta = theta
-		
+    
+    if(ev.keyCode == 77){
+      matlSel = (matlSel +1)%MATL_DEFAULT;
+      matl0.setMatl(matlSel);
+      setVals();
+      drawAll();
+      console.log("Hi");
+    }
+
 		if(ev.keyCode == 39) { // The right arrow key was pressed
 	//      g_EyeX += 0.01;
 					g_EyeX -= rotatedX;		// INCREASED for perspective camera)
