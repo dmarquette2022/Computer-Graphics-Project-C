@@ -83,6 +83,7 @@ gouraudBox = new VBObox1();		  // "  "  for first set of custom-shaded 3D parts
 gourardBox2 = new VBObox3();     // "  "  for second set of custom-shaded 3D parts
 phongBox = new VBObox4();     // "  "  for second set of custom-shaded 3D parts
 phongBox2 = new VBObox5();
+blackBox = new VBObox6();
 
 // For animation:---------------------
 var g_lastMS = Date.now();			// Timestamp (in milliseconds) for our 
@@ -90,12 +91,8 @@ var g_lastMS = Date.now();			// Timestamp (in milliseconds) for our
                                 // Set & used by moveAll() fcn to update all
                                 // time-varying params for our webGL drawings.
 // For mouse/keyboard:------------------------
-var g_show0 = 1;								// 0==Show, 1==Hide VBO0 contents on-screen.
-var g_show1 = 0;								// 	"					"			VBO1		"				"				" 
-var g_show2 = 0;                //  "         "     VBO2    "       "       "
-var g_show3 = 0;
-var g_show4 = 0;
-
+var g_show = 1;								// 0==Show, 1==Hide VBO0 contents on-screen.
+var light = 1;
 var g_EyeX = 20, g_EyeY = 0, g_EyeZ = 11; 
 var theta = 180;
 var g_LookAtX = g_EyeX + Math.cos(theta * (Math.PI/180));
@@ -155,6 +152,7 @@ function main() {
   gourardBox2.init(gl);    //  "   "   "  for 2nd kind of shading & lighting
   phongBox.init(gl);
   phongBox2.init(gl);
+  blackBox.init(gl);
   setCamera();
   setVals();
   gl.clearColor(0.2, 0.2, 0.2, 1);	  // RGBA color for clearing <canvas>
@@ -226,32 +224,58 @@ function drawAll() {
   var b4Draw = Date.now();
   var b4Wait = b4Draw - g_lastMS;
   setCamera();
-  document.getElementById("x").innerHTML = "Light Source Coordinates : " + document.getElementById("lx").value.toString() +", "+document.getElementById("ly").value.toString() +", "+document.getElementById("lz").value.toString().toString()
-	if(g_show0 == 1) {	// IF user didn't press HTML button to 'hide' VBO0:
-	  worldBox.switchToMe();  // Set WebGL to render from this VBObox.
-		worldBox.adjust();		  // Send new values for uniforms to the GPU, and
-		worldBox.draw();			  // draw our VBO's contents using our shaders.
-  }
-  if(g_show1 == 1) { // IF user didn't press HTML button to 'hide' VBO1:
+  document.getElementById("x").innerHTML = document.getElementById("lx").value.toString() +", "+document.getElementById("ly").value.toString() +", "+document.getElementById("lz").value.toString().toString()
+  document.getElementById("a").innerHTML = document.getElementById("a_r").value.toString() +", "+document.getElementById("a_g").value.toString() +", "+document.getElementById("a_b").value.toString().toString()
+  document.getElementById("d").innerHTML = document.getElementById("d_r").value.toString() +", "+document.getElementById("d_g").value.toString() +", "+document.getElementById("d_b").value.toString().toString()
+  document.getElementById("s").innerHTML = document.getElementById("s_r").value.toString() +", "+document.getElementById("s_g").value.toString() +", "+document.getElementById("s_b").value.toString().toString()
+  worldBox.switchToMe();  // Set WebGL to render from this VBObox.
+  worldBox.adjust();		  // Send new values for uniforms to the GPU, and
+  worldBox.draw();
+  if(light){
+    document.getElementById("0").style.backgroundColor = "yellow";
+    if(g_show == 1) { // IF user didn't press HTML button to 'hide' VBO1:
     gouraudBox.switchToMe();  // Set WebGL to render from this VBObox.
   	gouraudBox.adjust();		  // Send new values for uniforms to the GPU, and
-  	gouraudBox.draw();			  // draw our VBO's contents using our shaders.
-	  }
-	if(g_show2 == 1) { // IF user didn't press HTML button to 'hide' VBO2:
+    gouraudBox.draw();
+    document.getElementById("1").style.backgroundColor = "yellow";			  // draw our VBO's contents using our shaders.
+    }
+  else{
+    document.getElementById("1").style.backgroundColor = null;
+    }
+	if(g_show == 2) { // IF user didn't press HTML button to 'hide' VBO2:
 	  gourardBox2.switchToMe();  // Set WebGL to render from this VBObox.
   	gourardBox2.adjust();		  // Send new values for uniforms to the GPU, and
-    gourardBox2.draw();			  // draw our VBO's contents using our shaders.
+    gourardBox2.draw();
+    document.getElementById("2").style.backgroundColor = "yellow";			  // draw our VBO's contents using our shaders.
     }
-  if(g_show3 == 1){
+    else{
+      document.getElementById("2").style.backgroundColor = null;
+      }
+  if(g_show == 3){
     phongBox.switchToMe();  // Set WebGL to render from this VBObox.
   	phongBox.adjust();		  // Send new values for uniforms to the GPU, and
-    phongBox.draw();			  // draw our VBO's contents using our shaders.
+    phongBox.draw();
+    document.getElementById("3").style.backgroundColor = "yellow";			  // draw our VBO's contents using our shaders.
   }
-  if(g_show4 == 1){
+  else{
+    document.getElementById("3").style.backgroundColor = null;
+    }
+  if(g_show  == 4){
     phongBox2.switchToMe();  // Set WebGL to render from this VBObox.
   	phongBox2.adjust();		  // Send new values for uniforms to the GPU, and
-    phongBox2.draw();			  // draw our VBO's contents using our shaders.
+    phongBox2.draw();
+    document.getElementById("4").style.backgroundColor = "yellow";			  // draw our VBO's contents using our shaders.
   }
+  else{
+    document.getElementById("4").style.backgroundColor = null;
+    }
+  }
+else{
+  blackBox.switchToMe();  // Set WebGL to render from this VBObox.
+  blackBox.adjust();		  // Send new values for uniforms to the GPU, and
+  blackBox.draw();
+  document.getElementById("0").style.backgroundColor = null;
+}
 
 
     
@@ -263,42 +287,52 @@ console.log("wait b4 draw: ", b4Wait, "drawWait: ", drawWait, "mSec");
 */
 }
 
-function VBO0toggle() {
+function lit() {
 //=============================================================================
 // Called when user presses HTML-5 button 'Show/Hide VBO0'.
-  if(g_show0 != 1) g_show0 = 1;				// show,
-  else g_show0 = 0;										// hide.
-  console.log('g_show0: '+g_show0);
+  if(light != 1) light = 1;				// show,
+  else light = 0;										// hide.
 }
 
 function VBO1toggle() {
 //=============================================================================
 // Called when user presses HTML-5 button 'Show/Hide VBO1'.
-  if(g_show1 != 1) g_show1 = 1;			// show,
-  else g_show1 = 0;									// hide.
-  console.log('g_show1: '+g_show1);
+  g_show = 1;
+  document.getElementById("1").style.backgroundColor = "yellow";
+  document.getElementById("2").style.backgroundColor = null;
+  document.getElementById("3").style.backgroundColor = null;
+  document.getElementById("4").style.backgroundColor = null;							// hide.
 }
 
 function VBO2toggle() {
 //=============================================================================
 // Called when user presses HTML-5 button 'Show/Hide VBO2'.
-  if(g_show2 != 1) g_show2 = 1;			// show,
-  else g_show2 = 0;									// hide.
-  console.log('g_show2: '+g_show2);
+  g_show = 2;
+  document.getElementById("2").style.backgroundColor = "yellow";
+  document.getElementById("1").style.backgroundColor = null;
+  document.getElementById("3").style.backgroundColor = null;
+  document.getElementById("4").style.backgroundColor = null;
+
 }
 
 function VBO3toggle() {
   //=============================================================================
   // Called when user presses HTML-5 button 'Show/Hide VBO2'.
-    if(g_show3 != 1) g_show3 = 1;			// show,
-    else g_show3 = 0;									// hide.
+  g_show = 3;	
+  document.getElementById("3").style.backgroundColor = "yellow";
+  document.getElementById("2").style.backgroundColor = null;
+  document.getElementById("1").style.backgroundColor = null;
+  document.getElementById("4").style.backgroundColor = null;								// hide.
   }
 
 function VBO4toggle() {
   //=============================================================================
   // Called when user presses HTML-5 button 'Show/Hide VBO2'.
-    if(g_show4 != 1) g_show4 = 1;			// show,
-    else g_show4 = 0;									// hide.
+  g_show = 4;
+  document.getElementById("4").style.backgroundColor = "yellow";
+  document.getElementById("2").style.backgroundColor = null;
+  document.getElementById("3").style.backgroundColor = null;
+  document.getElementById("1").style.backgroundColor = null;								// hide.
   }
 
 function setCamera() {

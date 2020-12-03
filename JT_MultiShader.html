@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" href="styles.css">
     <title>JT_Multi-Shader</title>
   </head>
 
@@ -9,50 +10,59 @@
     <canvas id="webgl" width="600" height="600">
     Please use a browser that supports "canvas"
     </canvas>
-    <p>
-      <button type="button" onclick="light()">Light On/Off</button>
-      <button type="button" onclick="VBO1toggle()">Show/Hide Gouraud Shading w/ Phong Lighting</button>
-      <button type="button" onclick="VBO2toggle()">Show/Hide Gourard Shading w/ Blinn-Phong Lighting</button>
-      <button type="button" onclick="VBO3toggle()">Show/Hide Phong Shading w/ Blinn-Phong Lighting</button>
-      <button type="button" onclick="VBO4toggle()">Show/Hide Phong Shading w/ Phong Lighting</button>
-      <p id="x">
-      </p>
-      X: <input type="range" min="-100" max="100" value="5" class="slider" id="lx">
-      <br>
-      Y :<input type="range" min="-100" max="100" value="5" class="slider" id="ly">
-      <br>
-      Z :<input type="range" min="-100" max="100" value="5" class="slider" id="lz">
-      <br>
-      <br>
-      Ambient Lighting
-      <br>
-      Red Value : <input type="range" min="0" max="100" value="50" class="slider" id="a_r">
-      <br>
-      Green Value : <input type="range" min="0" max="100" value="50" class="slider" id="a_g">
-      <br>
-      Blue Value : <input type="range" min="0" max="100" value="50" class="slider" id="a_b">
-      <br>
-      <br>
-      Diffuse Lighting
-      <br>
-      Red Value : <input type="range" min="0" max="100" value="50" class="slider" id="d_r">
-      <br>
-      Green Value : <input type="range" min="0" max="100" value="50" class="slider" id="d_g">
-      <br>
-      Blue Value :<input type="range" min="0" max="100" value="50" class="slider" id="d_b">
-      <br>
-      <br>
-      Specular Lighting
-      <br>
-      Red Value : <input type="range" min="0" max="100" value="50" class="slider" id="s_r">
-      <br>
-      Green Value : <input type="range" min="0" max="100" value="50" class="slider" id="s_g">
-      <br>
-      Blue Value : <input type="range" min="0" max="100" value="50" class="slider" id="s_b">
-      <br>
-      <br>
+    <div class="buttons">
+      <button id="0"class="button" type="button" onclick="lit()">Light On/Off</button>
+      <button id="1"class="button" type="button" onclick="VBO1toggle()">Switch to Gouraud Shading w/ Phong Lighting</button>
+      <button id="2"class="button" type="button" onclick="VBO2toggle()">Switch to Gourard Shading w/ Blinn-Phong Lighting</button>
+      <button id="3"class="button" type="button" onclick="VBO3toggle()">Switch to Phong Shading w/ Blinn-Phong Lighting</button>
+      <button id="4"class="button" type="button" onclick="VBO4toggle()">Switch to Phong Shading w/ Phong Lighting</button>
+    </div>
+    <div class = "main">
+      <div class = "item">
+        Lamp Location
+        <p id="x">
+        </p>
+        <input type="range" min="-100" max="100" value="5" class="xyz" id="lx"><br>
+        <input type="range" min="-100" max="100" value="5" class="xyz" id="ly"><br>
+        <input type="range" min="-100" max="100" value="5" class="xyz" id="lz">
+      </div>
+      <div class = "item">
+        Ambient Light
+        <p id="a">
+        </p>
+      <input type="range" min="0" max="100" value="50" class="red" id="a_r"><br>
+      <input type="range" min="0" max="100" value="50" class="green" id="a_g"><br>
+      <input type="range" min="0" max="100" value="50" class="blue" id="a_b">
+      </div>
+      <div class = "item">
+        Diffuse Light
+        <p id="d">
+        </p>
+      <input type="range" min="0" max="100" value="50" class="red" id="d_r"><br>
+      <input type="range" min="0" max="100" value="50" class="green" id="d_g"><br>
+      <input type="range" min="0" max="100" value="50" class="blue" id="d_b">
+      </div>
+
+      <div class = "item">
+        Specular Light
+        <p id="s">
+        </p>
+      <input type="range" min="0" max="100" value="50" class="red" id="s_r"><br>
+      <input type="range" min="0" max="100" value="50" class="green" id="s_g"><br>
+      <input type="range" min="0" max="100" value="50" class="blue" id="s_b">
+      </div>
+      <div class="instructions">
+        Use the On/Off switch to toggle the light source<br>
+        Use the remaining four buttons to change the lighting/shading method useds to illuminate the sphere<br>
+        Use WASD controls to look around the space<br>
+        Use Arrow Keys to move around the space<br>
+        Press M to change the material of the sphere<br>
+        Use the leftmost sliders to change the X,Y,Z coordinates of the light source<br>
+        Use the remaining sliders to change the RGB values of the lighting on the sphere
+
+      </div>
       
-    </p>
+    </div>
     <script src="lib/webgl-utils.js"></script>
     <script src="lib/webgl-debug.js"></script>
     <script src="lib/cuon-utils.js"></script>

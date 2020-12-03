@@ -1,0 +1,57 @@
+.main {
+    margin-top:10px;
+    width:100%;
+    height: 15vh;
+    display: flex;
+    overflow-y: scroll;
+  }
+.button {
+    font-size: 10px;
+}
+.red{
+    -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 20px; /* Specified height */
+  background: #eeb0b0; /* Grey background */
+}
+.green{
+    -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 20px; /* Specified height */
+  background: #b0eed6; /* Grey background */
+}
+.blue{
+    -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 20px; /* Specified height */
+  background: #b0c8ee; /* Grey background */
+}
+.xyz{
+    -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 20px; /* Specified height */
+  background: #d8d8d8; /* Grey background */
+}
+.instructions{
+   width:800px; 
+   border-right-color: white;
+    border-right-width: 10px;
+    border-right-style: solid;
+}
+#webgl{
+    width:100%;
+}
+.item{
+    border-right-color: white;
+    border-right-width: 10px;
+    border-right-style: solid;
+}
+.buttons{
+    height:7vh;
+    display: flex;
+    overflow-y: scroll;
+}
