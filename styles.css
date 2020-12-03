@@ -1,58 +1,93 @@
 .main {
-    margin-top:10px;
     width:100%;
     height: 15vh;
     display: flex;
-    overflow-y: scroll;
+    overflow-y: auto;
+    font-size: 2vh;
+    margin-top: 1vh;
   }
 .button {
-    font-size: 10px;
+    font-size: 1.3vh;
 }
 .red{
     -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
   width: 100%; /* Full-width */
-  height: 20px; /* Specified height */
+  height: 1.5vh; /* Specified height */
   background: #eeb0b0; /* Grey background */
 }
 .green{
     -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
   width: 100%; /* Full-width */
-  height: 20px; /* Specified height */
+  height: 1.5vh; /* Specified height */
   background: #b0eed6; /* Grey background */
 }
 .blue{
     -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
   width: 100%; /* Full-width */
-  height: 20px; /* Specified height */
+  height: 1.5vh; /* Specified height */
   background: #b0c8ee; /* Grey background */
 }
 .xyz{
     -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
   width: 100%; /* Full-width */
-  height: 20px; /* Specified height */
+  height: 1.5vh; /* Specified height */
   background: #d8d8d8; /* Grey background */
 }
 .instructions{
+    font-size: 1.5vh;
    width:800px; 
    border-right-color: white;
-    border-right-width: 10px;
+    border-right-width: 2vh;
     border-right-style: solid;
 }
 #webgl{
-    width:100%;
-    height:70vh;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
 }
 .item{
     border-right-color: white;
-    border-right-width: 10px;
+    border-right-width: 2vh;
     border-right-style: solid;
 }
 .buttons{
-    height:7vh;
+    height:4vh;
     display: flex;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
+p{
+    margin-bottom: 1vh;
+    margin-top: 0;
+}
+.red::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 2vh; /* Set a specific slider handle width */
+    height: 2vh; /* Slider handle height */
+    background-color: grey;
+  }
+  .blue::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 2vh; /* Set a specific slider handle width */
+    height: 2vh; /* Slider handle height */
+    background-color: grey;
+  }
+  .green::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 2vh; /* Set a specific slider handle width */
+    height: 2vh; /* Slider handle height */
+    background-color: grey;
+  }
+  .xyz::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 2vh; /* Set a specific slider handle width */
+    height: 2vh; /* Slider handle height */
+    background-color: grey;
+  }
